@@ -50,6 +50,11 @@ def synthesize(fs, tokens, output_dir, wav_output_name='output', mid_output_name
     mid.save(midi_output_path) # 결과 mid 파일 저장
     fs.midi_to_audio(midi_output_path, wav_output_path) # 결과 wav 파일 저장
 
+    # WAV 소리를 키우기
+    audio = AudioSegment.from_file(wav_output_path, format="wav")
+    louder_audio = audio + 14
+    louder_audio.export(wav_output_path, format="wav")  # 기존 파일 덮어쓰기
+
     # ZIP 파일 생성
     zip_output_path = os.path.join(output_dir, 'generated_music.zip')
     with zipfile.ZipFile(zip_output_path, 'w') as zipf:

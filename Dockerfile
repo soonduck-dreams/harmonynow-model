@@ -34,7 +34,7 @@ RUN pip install pydub
 RUN pip install fastapi uvicorn
 
 # 7. model.py 및 필요한 디렉토리 복사
-COPY new_model.py /app/
+COPY model_server.py /app/
 RUN mkdir /app/uploads /app/output
 
 # 8. FastAPI 서버 실행
