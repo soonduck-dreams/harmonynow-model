@@ -1,0 +1,13 @@
+hf_cache/
+output/
+uploads/
+
+# OS/Editor-specific files
+*.swp
+*.log
+*.tmp
+.DS_Store
+
+# Python cache files
+__pycache__/
+*.pyc
