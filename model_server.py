@@ -96,25 +96,25 @@ def infill_chord(intro_midi_path, outro_midi_path, output_dir, save=False):
         synthesize(fs, result_comping, output_dir, 'comping', 'comping_midi')
     return result_comping, intro_melody, outro_melody
 
-# def infill_melody(result_comping, intro_melody, outro_melody, save=True, intro_clip_sec=1):
-#     print('Infilling Melody... ')
-#     comping_with_outro_melody = result_comping + outro_melody
-#     comping_with_outro_melody = add_control_offset(comping_with_outro_melody)
-#     intro_melody_and_middle_melody = generate(model, 4, before_outro_length, inputs=intro_melody, controls=comping_with_outro_melody)
+def infill_melody(result_comping, intro_melody, outro_melody, output_dir, save=True, intro_clip_sec=1):
+    print('Infilling Melody... ')
+    comping_with_outro_melody = result_comping + outro_melody
+    comping_with_outro_melody = add_control_offset(comping_with_outro_melody)
+    intro_melody_and_middle_melody = generate(model, 4, before_outro_length, inputs=intro_melody, controls=comping_with_outro_melody)
 
-#     clipped_intro_melody = ops.clip(intro_melody, 0, intro_clip_sec)
-#     middle_melody = ops.clip(intro_melody_and_middle_melody, 4, 12)
+    clipped_intro_melody = ops.clip(intro_melody, 0, intro_clip_sec)
+    middle_melody = ops.clip(intro_melody_and_middle_melody, 4, 12)
 
-#     middle_melody = add_control_offset(middle_melody)
+    middle_melody = add_control_offset(middle_melody)
 
-#     generated_intro_melody = generate(model, intro_clip_sec, 4, inputs=clipped_intro_melody, controls=middle_melody)
+    generated_intro_melody = generate(model, intro_clip_sec, 4, inputs=clipped_intro_melody, controls=middle_melody)
 
-#     middle_melody = remove_control_offset(middle_melody)
-#     comping_with_outro_melody = remove_control_offset(comping_with_outro_melody)
+    middle_melody = remove_control_offset(middle_melody)
+    comping_with_outro_melody = remove_control_offset(comping_with_outro_melody)
 
-#     result = generated_intro_melody + middle_melody + comping_with_outro_melody
-#     if save:
-#         synthesize(fs, result, 'full', 'full_midi')
+    result = generated_intro_melody + middle_melody + comping_with_outro_melody
+    if save:
+        synthesize(fs, result, output_dir, 'full', 'full_midi')
 
 @app.post("/infill")
 async def infill_new(
@@ -139,8 +139,8 @@ async def infill_new(
         buffer.write(await outro_file.read())
 
     # 연산 수행
-    result_comping, intro_melody, outro_melody = infill_chord(intro_midi_path, outro_midi_path, output_dir, save=True)
-    # infill_melody(result_comping, intro_melody, outro_melody, intro_clip_sec=1, save=True)
+    result_comping, intro_melody, outro_melody = infill_chord(intro_midi_path, outro_midi_path, output_dir, save=False)
+    infill_melody(result_comping, intro_melody, outro_melody, output_dir, save=True, intro_clip_sec=4)
 
     result_zip_path = os.path.join(output_dir, 'generated_music.zip')
 
